@@ -4,8 +4,8 @@
 // ===== CONFIGURATION =====
 uint8_t MY_DEVICE_ID;
 
-const uint16_t IR_LED_PIN = 10;
-const uint16_t TRIGGER_PIN = 9;
+const uint16_t IR_LED_PIN = D3;
+const uint16_t TRIGGER_PIN = D4;
 
 char* ssid = "LaserTag";
 char* password = "lasertag123";

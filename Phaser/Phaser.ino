@@ -43,6 +43,10 @@ void shoot(uint8_t playerID){
   uint32_t data = (playerID << 4) | checksum;
 
   irsend.sendNEC(data, 32);
+  delay(100);
+  irsend.sendNEC(data, 32);
+  delay(100);
+  irsend.sendNEC(data, 32);
   Serial.println("Shot fired!");
   sendHitData();
 }

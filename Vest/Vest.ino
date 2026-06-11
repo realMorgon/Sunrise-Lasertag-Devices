@@ -7,8 +7,8 @@ decode_results results;
 uint8_t MY_DEVICE_ID;
 const char* type = "Vest";
 
-char* ssid = "LaserTag";
-char* password = "lasertag123";
+String ssid = preferences.getString("ssid", "LaserTag");
+String pass = preferences.getString("password", "lasertag123");
 char* serverIP = "192.168.4.1";
 int port = 5000;
 

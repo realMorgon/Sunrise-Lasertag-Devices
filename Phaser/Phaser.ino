@@ -1,14 +1,16 @@
 #include <IRsend.h>
 #include <LaserTagCore.h>
+#include <Preferences.h>
 
 // ===== CONFIGURATION =====
 uint8_t MY_DEVICE_ID;
+const char* type = "Phaser";
 
 const uint16_t IR_LED_PIN = D3;
 const uint16_t TRIGGER_PIN = D4;
 
-char* ssid = "LaserTag";
-char* password = "lasertag123";
+String ssid = preferences.getString("ssid", "LaserTag");
+String pass = preferences.getString("password", "lasertag123");
 char* serverIP = "192.168.4.1";
 int port = 5000;
 
@@ -26,7 +28,7 @@ void setup() {
   pinMode(TRIGGER_PIN, INPUT_PULLUP);
 
   connectWifi(ssid, password);
-  MY_DEVICE_ID = sync(serverIP, port);
+  MY_DEVICE_ID = sync(serverIP, port, type);
 }
 
 void loop() {

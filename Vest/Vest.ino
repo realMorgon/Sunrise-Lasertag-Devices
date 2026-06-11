@@ -1,4 +1,4 @@
-#include<IRrecv.h>
+#include <IRrecv.h>
 #include <LaserTagCore.h>
 
 const uint16_t PIN = D4;
@@ -7,9 +7,7 @@ decode_results results;
 uint8_t MY_DEVICE_ID;
 const char* type = "Vest";
 
-String ssid = preferences.getString("ssid", "LaserTag");
-String pass = preferences.getString("password", "lasertag123");
-char* serverIP = "192.168.4.1";
+String serverIP = "192.168.4.1";
 int port = 5000;
 
 const String default_url = "http://" + String(serverIP) + ":" + String(port) + "/api";
@@ -20,7 +18,7 @@ void setup() {
   Serial.println("Start");
   irrecv.enableIRIn();
 
-  connectWifi(ssid, password);
+  connectWifi();
   MY_DEVICE_ID = sync(serverIP, port, type);
 }
 

@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <IRrecv.h>
 #include <LaserTagCore.h>
 

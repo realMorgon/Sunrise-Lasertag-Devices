@@ -5,13 +5,13 @@
 const uint16_t PIN = D4;
 IRrecv irrecv(PIN);
 decode_results results;
-uint8_t MY_DEVICE_ID;
+uint8_t DEVICE_UUID[16];
 const char* type = "Vest";
 
 String serverIP = "192.168.4.1";
 int port = 5000;
 
-const String default_url = "http://" + String(serverIP) + ":" + String(port) + "/api";
+LasertagDevice device(DEVICE_UUID, serverIP, port);
 
 
 void setup() {
@@ -19,8 +19,8 @@ void setup() {
   Serial.println("Start");
   irrecv.enableIRIn();
 
-  connectWifi();
-  MY_DEVICE_ID = sync(serverIP, port, type);
+  device.connectWifi();
+  device.sync(LasertagDeviceType::VEST);
 }
 
 void loop() {
@@ -38,7 +38,7 @@ void loop() {
     // Serial.println(results.bits);
 
     uint8_t transmitted_checksum = results.value & 0b1111;
-    uint32_t data = (results.value >> 4);
+    uint8_t data = results.value >> 4;
 
     uint8_t calculated_checksum = (data & 0b1111) + ((data >> 4) & 0b1111);
 
@@ -51,9 +51,8 @@ void loop() {
       Serial.print("Checksum checks out! (");
       Serial.print(calculated_checksum, BIN);
       Serial.println(")");
-      // ===== Send http =====
-      String url = default_url + "/hit/recieve?my_id=" + String(MY_DEVICE_ID) + "&their_id=" + String(data) + "&time=" + String(millis());
-      sendHTTP(url);
+      // ===== Send UDP =====
+      device.sendUDP(LasertagEvent::GOT_HIT, &data, 1);
       delay(500);
     }else {
       Serial.println("Checksum doesn't check out!");

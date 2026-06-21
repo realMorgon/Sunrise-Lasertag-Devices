@@ -1,29 +1,23 @@
 #include <Arduino.h>
 #include <IRsend.h>
 #include <LaserTagCore.h>
+#include <cstdint>
 
 // ===== CONFIGURATION =====
-uint8_t MY_DEVICE_ID;
+uint8_t DEVICE_UUID[16];
+uint8_t PLAYER_ID;
 const String type = "Phaser";
 
 const uint16_t IR_LED_PIN = D3;
 const uint16_t TRIGGER_PIN = D4;
 
-String serverIP = "192.168.4.1";
-int port = 5000;
+const String serverIP = "192.168.4.1";
+const int port = 5000;
 
-const String default_url = "http://" + String(serverIP) + ":" + String(port) + "/api";
-
+LasertagDevice device(DEVICE_UUID, serverIP, port);
 IRsend irsend(IR_LED_PIN);
 
 // ===== CALL METHODS =====
-void sendHitData(){
-
-  String url = default_url + "/hit/send?id=" + String(MY_DEVICE_ID) + "&time=" + String(millis());
-  sendHTTP(url);
-
-}
-
 uint8_t calculate_checksum(uint8_t playerID){
   uint8_t upper_nibble = (playerID >> 4) & 0b1111;
   uint8_t under_nibble = playerID & 0b1111;
@@ -40,7 +34,7 @@ void shoot(uint8_t playerID){
   delay(100);
   irsend.sendNEC(data, 32);
   Serial.println("Shot fired!");
-  sendHitData();
+  device.sendUDP(LasertagEvent::SHOOT, nullptr, 0);
 }
 
 
@@ -52,13 +46,13 @@ void setup() {
 
   pinMode(TRIGGER_PIN, INPUT_PULLUP);
 
-  connectWifi();
-  MY_DEVICE_ID = sync(serverIP, port, type);
+  device.connectWifi();
+  device.sync(LasertagDeviceType::PHASER);
 }
 
 void loop() {
   if (digitalRead(TRIGGER_PIN) == LOW) {
-    shoot(MY_DEVICE_ID);
+    shoot(PLAYER_ID);
     delay(20);
     while(digitalRead(TRIGGER_PIN) == LOW);  // Warte auf Loslassen
   }

@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <IRsend.h>
-#include <LaserTagCore.h>
+#include <Sunrise-Lasertag-CoreLibrary.h>
 #include <cstdint>
 
 // ===== CONFIGURATION =====
@@ -12,7 +12,7 @@ const uint16_t IR_LED_PIN = D3;
 const uint16_t TRIGGER_PIN = D4;
 
 const String serverIP = "192.168.4.1";
-const int port = 5000;
+const int port = 9999;
 
 LasertagDevice device(DEVICE_UUID, serverIP, port);
 IRsend irsend(IR_LED_PIN);
